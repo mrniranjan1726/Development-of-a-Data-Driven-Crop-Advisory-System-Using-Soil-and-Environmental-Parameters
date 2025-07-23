@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Crop Advisory System</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body, html {
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(120deg, #a5d6a7, #81c784);
+      overflow-x: hidden;
+    }
+
+    .welcome-container, .form-container {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      height: 100vh;
+      width: 100%;
+    }
+
+    .welcome-container {
+      display: flex;
+      animation: fadeIn 2s ease-in-out;
+      color: white;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-bottom: 20px;
+      animation: slideIn 1.5s ease-out;
+    }
+
+    p {
+      font-size: 1.5em;
+      margin-bottom: 30px;
+      animation: fadeIn 2s ease-in;
+    }
+
+    .start-button, .form-button {
+      padding: 12px 24px;
+      background-color: #2e7d32;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      animation: popUp 2s ease;
+    }
+
+    .start-button:hover, .form-button:hover {
+      background-color: #81ffe6;
+    }
+
+    .leaf {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Leaf_icon.svg/1024px-Leaf_icon.svg.png') no-repeat center;
+      background-size: contain;
+      animation: fall 10s linear infinite;
+      opacity: 0.7;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+
+    @keyframes slideIn {
+      from {transform: translateY(-50px); opacity: 0;}
+      to {transform: translateY(0); opacity: 1;}
+    }
+
+    @keyframes popUp {
+      0% {transform: scale(0);}
+      60% {transform: scale(1.1);}
+      100% {transform: scale(1);}
+    }
+
+    @keyframes fall {
+      0% {transform: translateY(-100px) rotate(0);}
+      100% {transform: translateY(100vh) rotate(360deg);}
+    }
+
+    .form-section {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    input {
+      display: block;
+      width: 300px;
+      margin: 10px auto;
+      padding: 10px;
+      border: 1px solid #b2dfdb;
+      border-radius: 5px;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #1b5e20;
+    }
+
+    .voice-button {
+      margin-top: 20px;
+      background-color: #388e3c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      animation: popUp 1s ease;
+    }
+
+    .voice-button:hover {
+      background-color: #2e7d32;
+    }
+  </style>
+</head>
+<body>
+  <!-- Falling Leaves -->
+  <div class="leaf" style="left: 10%; animation-delay: 0s;"></div>
+  <div class="leaf" style="left: 30%; animation-delay: 2s;"></div>
+  <div class="leaf" style="left: 50%; animation-delay: 4s;"></div>
+  <div class="leaf" style="left: 70%; animation-delay: 6s;"></div>
+  <div class="leaf" style="left: 90%; animation-delay: 8s;"></div>
+
+  <!-- Welcome Page -->
+  <div class="welcome-container" id="welcome">
+    <h1>🌱 Welcome to Crop Advisory System</h1>
+    <p>Your smart assistant for crop recommendations</p>
+    <button class="start-button" onclick="showForm()">Get Started</button>
+  </div>
+
+  <!-- Form Page -->
+  <div class="form-container" id="formSection">
+    <h1>🌾 Crop Recommendation System</h1>
+    <div class="form-section">
+      <form id="cropForm" onsubmit="handleSubmit(event)">
+        <input type="number" step="any" name="nitrogen" placeholder="Nitrogen level (N)" required>
+        <input type="number" step="any" name="phosphorus" placeholder="Phosphorus level (P)" required>
+        <input type="number" step="any" name="potassium" placeholder="Potassium level (K)" required>
+        <input type="number" step="any" name="ph" placeholder="Soil pH" required>
+        <input type="number" step="any" name="temperature" placeholder="Temperature (°C)" required>
+        <input type="number" step="any" name="humidity" placeholder="Humidity (%)" required>
+        <input type="number" step="any" name="rainfall" placeholder="Rainfall (mm)" required>
+        <button class="form-button" type="submit">Get Recommendation</button>
+      </form>
+      <div class="result" id="result"></div>
+      <button class="voice-button" onclick="readResult()">🔊 Voice Assistant</button>
+    </div>
+  </div>
+
+  <script>
+    function showForm() {
+      document.getElementById('welcome').style.display = 'none';
+      document.getElementById('formSection').style.display = 'flex';
+    }
+
+    const cropDatabase = [
+      { name: "Rice", N:[80,120], P:[40,50], K:[40,50], pH:[5.5,7], temp:[20,35], humidity:[60,80], rainfall:[1000,1500]},
+      { name: "Wheat", N:[100,150], P:[60,70], K:[40,50], pH:[6,7.5], temp:[15,25], humidity:[50,70], rainfall:[500,1000]},
+      { name: "Maize", N:[100,120], P:[50,60], K:[40,60], pH:[5.5,7], temp:[18,27], humidity:[50,70], rainfall:[500,800]},
+      { name: "Sugarcane", N:[100,150], P:[60,80], K:[100,120], pH:[6,7.5], temp:[20,30], humidity:[70,80], rainfall:[1500,2500]},
+      { name: "Cotton", N:[50,100], P:[30,50], K:[30,50], pH:[6,7.5], temp:[20,30], humidity:[50,70], rainfall:[500,1000]},
+      { name: "Groundnut", N:[20,40], P:[40,60], K:[40,60], pH:[5.5,7], temp:[25,30], humidity:[60,70], rainfall:[500,1000]},
+      { name: "Soybean", N:[20,40], P:[60,80], K:[40,60], pH:[6,7], temp:[20,30], humidity:[60,70], rainfall:[600,1000]},
+      { name: "Potato", N:[100,150], P:[60,80], K:[100,150], pH:[5,6.5], temp:[15,20], humidity:[60,80], rainfall:[600,800]},
+      { name: "Chickpea", N:[20,40], P:[40,60], K:[20,40], pH:[6,8], temp:[10,25], humidity:[50,70], rainfall:[400,600]},
+      { name: "Tomato", N:[80,120], P:[60,80], K:[50,70], pH:[5.5,7.5], temp:[18,27], humidity:[60,80], rainfall:[600,800]}
+    ];
+
+    function isInRange(value, range) {
+      return value >= range[0] && value <= range[1];
+    }
+
+    let lastResult = "";
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        nitrogen: parseFloat(form.nitrogen.value),
+        phosphorus: parseFloat(form.phosphorus.value),
+        potassium: parseFloat(form.potassium.value),
+        ph: parseFloat(form.ph.value),
+        temperature: parseFloat(form.temperature.value),
+        humidity: parseFloat(form.humidity.value),
+        rainfall: parseFloat(form.rainfall.value)
+      };
+
+      const matchedCrops = cropDatabase.filter(crop =>
+        isInRange(data.nitrogen, crop.N) &&
+        isInRange(data.phosphorus, crop.P) &&
+        isInRange(data.potassium, crop.K) &&
+        isInRange(data.ph, crop.pH) &&
+        isInRange(data.temperature, crop.temp) &&
+        isInRange(data.humidity, crop.humidity) &&
+        isInRange(data.rainfall, crop.rainfall)
+      );
+
+      const resultDiv = document.getElementById('result');
+      if (matchedCrops.length > 0) {
+        lastResult = `Recommended Crop(s): ${matchedCrops.map(c => c.name).join(", ")}`;
+      } else {
+        lastResult = "No suitable crop found for the given data.";
+      }
+
+      resultDiv.textContent = "✅ " + lastResult;
+    }
+
+    function readResult() {
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(lastResult || "No result yet.");
+        utterance.lang = 'en-IN';
+        speechSynthesis.speak(utterance);
+      } else {
+        alert("Sorry, your browser does not support speech synthesis.");
+      }
+    }
+  </script>
+</body>
+</html>
