@@ -1,0 +1,2 @@
+# Development-of-a-Data-Driven-Crop-Advisory-System-Using-Soil-and-Environmental-Parameters
+A smart crop advisory system powered by machine learning analyzes real-time soil and climate data—like pH, NPK, rainfall, and temperature—to recommend ideal crops and fertilizers. This intelligent tool transforms traditional farming into precision agriculture, boosting yield, conserving resources, and empowering rural farmers digitally.
