@@ -87,10 +87,10 @@ Visit `http://127.0.0.1:5000` in your browser.
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-Developed By- Niranjan Nanda
-              Supratika Padhi
-              Gudla Vivek 
-              Durga Prasad Rath
+Developed By- 1)Niranjan Nanda
+              2)Supratika Padhi
+              3)Gudla Vivek 
+              4)Durga Prasad Rath
 
 TEAM NAME- Team(SC2)_1
 
